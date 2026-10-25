@@ -554,7 +554,7 @@ header{display:flex;align-items:center;justify-content:space-between;gap:14px;fl
 
   allCountEl.textContent = allEmotes.length + ' emotes';
 
-  // Build API URL with CORS Proxy
+  // Build API URL with new free CORS Proxy (AllOrigins)
   function buildUrl(emoteId) {
     // Generate the direct URL to the API
     var targetUrl = API_ENDPOINT + '?' +
@@ -570,7 +570,8 @@ header{display:flex;align-items:center;justify-content:space-between;gap:14px;fl
     targetUrl += '&emote_id=' + encodeURIComponent(emoteId);
 
     // Wrap it in a CORS proxy to bypass browser restrictions
-    return 'https://corsproxy.io/?' + encodeURIComponent(targetUrl);
+    // Using allorigins.win because corsproxy.io now requires paid API keys
+    return 'https://api.allorigins.win/raw?url=' + encodeURIComponent(targetUrl);
   }
 
   // Send function
