@@ -50,28 +50,18 @@ header{display:flex;align-items:center;justify-content:space-between;gap:14px;fl
 .field input:focus,.field select:focus{border-color:var(--gold);box-shadow:0 0 0 3px var(--glow)}
 .field select option{background:var(--surface);color:var(--ink)}
 
-/* search */
-.search-wrap{position:relative;margin-bottom:16px}
-.search-wrap .i{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none}
-.search-wrap input{width:100%;padding:12px 14px 12px 42px;border-radius:13px;border:1px solid var(--line);background:var(--input);color:var(--ink);font-size:14px;outline:none;transition:border-color .2s,box-shadow .2s}
-.search-wrap input:focus{border-color:var(--gold);box-shadow:0 0 0 3px var(--glow)}
-
 /* emotes */
 .emote-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px}
 .emote-item{display:flex;flex-direction:column;align-items:center;gap:12px;padding:16px 12px 14px;background:var(--card);border:1px solid var(--line);border-radius:18px;transition:transform .2s,border-color .2s,box-shadow .2s}
 .emote-item:hover{transform:translateY(-3px);border-color:var(--gold);box-shadow:0 14px 30px var(--glow)}
 .emote-item img,.emote-ph{width:88px;height:88px;border-radius:14px;object-fit:contain;background:var(--input);border:1px solid var(--line)}
 .emote-ph{display:grid;place-items:center;color:var(--gold);font-size:28px}
-.emote-name{font-size:14px;font-weight:700;text-align:center;line-height:1.3}
+.emote-name{font-size:14px;font-weight:700;text-align:center}
 .send{width:100%;display:flex;align-items:center;justify-content:center;gap:8px;padding:10px 12px;border:0;border-radius:30px;font-weight:800;font-size:14px;cursor:pointer;color:var(--onGold);background:linear-gradient(135deg,var(--gold),var(--gold2));transition:transform .15s,filter .15s}
 .send:hover{filter:brightness(1.08)}
 .send:active{transform:scale(.96)}
 .send:disabled{opacity:.55;cursor:wait}
 .send:focus-visible,.btn:focus-visible,.ig-pill:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
-
-/* load more */
-.load-more{width:100%;margin-top:16px;padding:14px;border-radius:30px;border:1px solid var(--line);background:var(--card);color:var(--ink);font-weight:800;font-size:14px;cursor:pointer;transition:.2s}
-.load-more:hover{border-color:var(--gold);background:var(--input)}
 
 /* toast */
 .toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%);padding:13px 24px;border-radius:14px;font-size:14px;font-weight:600;z-index:99999;max-width:90%;text-align:center;color:#fff;box-shadow:0 10px 40px rgba(0,0,0,.4);animation:up .35s ease}
@@ -103,12 +93,19 @@ header{display:flex;align-items:center;justify-content:space-between;gap:14px;fl
 @media(max-width:640px){.grid2{grid-template-columns:1fr}.uids{grid-template-columns:1fr 1fr}.panel{padding:16px}header{justify-content:center}.brand{width:100%;justify-content:center}.tools{width:100%;justify-content:center}}
 @media(max-width:380px){.uids{grid-template-columns:1fr}.emote-list{grid-template-columns:1fr 1fr;gap:10px}.emote-item img,.emote-ph{width:72px;height:72px}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+.search-wrap{position:relative;margin-bottom:16px}
+.search-wrap .i{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none}
+.search-wrap input{width:100%;padding:12px 14px 12px 42px;border-radius:13px;border:1px solid var(--line);background:var(--input);color:var(--ink);font-size:14px;outline:none;transition:border-color .2s,box-shadow .2s;user-select:text;-webkit-user-select:text}
+.search-wrap input:focus{border-color:var(--gold);box-shadow:0 0 0 3px var(--glow)}
+.load-more{width:100%;margin-top:16px;padding:14px;border-radius:30px;border:1px solid var(--line);background:var(--card);color:var(--ink);font-weight:800;font-size:14px;cursor:pointer;transition:.2s}
+.load-more:hover{border-color:var(--gold);background:var(--input)}
+.empty{grid-column:1/-1;text-align:center;color:var(--muted);padding:20px}
 </style>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
 
-<!-- icon set -->
+<!-- icon set (inline, no external files) -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <symbol id="i-lock" viewBox="0 0 24 24"><rect x="4.5" y="10.5" width="15" height="10.5" rx="3"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/><circle cx="12" cy="15.7" r="1.2" fill="currentColor" stroke="none"/></symbol>
   <symbol id="i-server" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="6.5" rx="2.5"/><rect x="3" y="13.5" width="18" height="6.5" rx="2.5"/><circle cx="7" cy="7.25" r=".9" fill="currentColor" stroke="none"/><circle cx="7" cy="16.75" r=".9" fill="currentColor" stroke="none"/></symbol>
@@ -166,13 +163,10 @@ header{display:flex;align-items:center;justify-content:space-between;gap:14px;fl
       <div class="field">
         <label for="server"><svg class="i"><use href="#i-server"/></svg> Server</label>
         <select id="server">
-          <option value="india">India Server</option>
-          <option value="bangladesh">Bangladesh Server</option>
-          <option value="pakistan">Pakistan Server</option>
-          <option value="indonesia">Indonesia Server</option>
-          <option value="brazil">Brazil Server</option>
-          <option value="taiwan">Taiwan Server</option>
-          <option value="vietnam">Vietnam Server</option>
+          <option value="ind">India Server</option>
+          <option value="pk">Pakistan Server</option>
+          <option value="bd">Bangladesh Server</option>
+          <option value="id">Indonesia Server</option>
         </select>
       </div>
       <div class="field">
@@ -190,15 +184,13 @@ header{display:flex;align-items:center;justify-content:space-between;gap:14px;fl
     </div>
   </section>
 
-  <!-- OB55 Emotes -->
   <section class="panel">
     <div class="panel-title"><span class="badge"><svg class="i"><use href="#i-spark"/></svg></span>OB55 Emotes<small>13 new</small></div>
     <div class="emote-list" id="emote-list-ob55"></div>
   </section>
 
-  <!-- All Emotes -->
   <section class="panel">
-    <div class="panel-title"><span class="badge"><svg class="i"><use href="#i-spark"/></svg></span>All Emotes<small id="all-count">Loading...</small></div>
+    <div class="panel-title"><span class="badge"><svg class="i"><use href="#i-spark"/></svg></span>All Emotes<small id="all-count"></small></div>
     <div class="search-wrap">
       <svg class="i"><use href="#i-search"/></svg>
       <input type="text" id="emote-search" placeholder="Search emotes by name or ID..." autocomplete="off">
@@ -245,7 +237,7 @@ header{display:flex;align-items:center;justify-content:space-between;gap:14px;fl
   pw.addEventListener('input', function () { pw.classList.remove('bad'); lockErr.textContent = ''; });
 
   // ===== API =====
-  var API_ENDPOINT = 'https://proapi.ffglory.site/emote';
+  var API_BASE = 'https://proapi.ffglory.site/emote';
   var API_KEY = 'ShadowTCPProGamer';
 
   // ===== Toast =====
@@ -270,277 +262,262 @@ header{display:flex;align-items:center;justify-content:space-between;gap:14px;fl
     try { localStorage.setItem('normalpapa_theme', th); } catch (e) {}
   });
 
-  // ===== OB55 Emotes =====
-  var ob55Emotes = [
-    { id: '909055001', name: 'OB55 Emote 1',  img: 'https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909055001.png' },
-    { id: '909055002', name: 'OB55 Emote 2',  img: 'https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909055002.png' },
-    { id: '909055003', name: 'OB55 Emote 3',  img: 'https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909055003.png' },
-    { id: '909055004', name: 'OB55 Emote 4',  img: 'https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909055004.png' },
-    { id: '909055005', name: 'OB55 Emote 5',  img: 'https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909055005.png' },
-    { id: '909055006', name: 'OB55 Emote 6',  img: 'https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909055006.png' },
-    { id: '909055007', name: 'OB55 Emote 7',  img: 'https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909055007.png' },
-    { id: '909055008', name: 'OB55 Emote 8',  img: 'https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909055008.png' },
-    { id: '909055009', name: 'OB55 Emote 9',  img: 'https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909055009.png' },
-    { id: '909055010', name: 'OB55 Emote 10', img: 'https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909055010.png' },
-    { id: '909055011', name: 'OB55 Emote 11', img: 'https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909055011.png' },
-    { id: '909055012', name: 'OB55 Emote 12', img: 'https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909055012.png' },
-    { id: '909055013', name: 'OB55 Emote 13', img: 'https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909055013.png' }
-  ];
-
-  // ===== Full Emote List =====
-  var allEmotes = [
-    { id: "909000075", name: "Cobra Max" },
-    { id: "909000063", name: "Ak Max" },
-    { id: "909035007", name: "Shotgun Max" },
-    { id: "909000068", name: "Scar Max" },
-    { id: "909000085", name: "XM8 Max" },
-    { id: "909000081", name: "M10 Max" },
-    { id: "909000090", name: "Famasa Max" },
-    { id: "909000098", name: "UMP Max" },
-    { id: "909040010", name: "New M40 Max" },
-    { id: "909045001", name: "Parafal Max" },
-    { id: "909042008", name: "WD Picker Max" },
-    { id: "909049012", name: "Open Fire" },
-    { id: "909042007", name: "Gloo Sculpture" },
-    { id: "909000002", name: "LOL" },
-    { id: "909000003", name: "Provoke" },
-    { id: "909000010", name: "Flowers of Love" },
-    { id: "909000014", name: "FFWC Throne" },
-    { id: "909000032", name: "Selfie" },
-    { id: "909000034", name: "Pirate's Flag" },
-    { id: "909000036", name: "Top DJ" },
-    { id: "909000038", name: "Power of Money" },
-    { id: "909000039", name: "Eat My Dust" },
-    { id: "909000041", name: "Kongfu" },
-    { id: "909000045", name: "I Heart You" },
-    { id: "909000046", name: "Tea Time" },
-    { id: "909000052", name: "Doggie" },
-    { id: "909000055", name: "I'm Rich!" },
-    { id: "909000056", name: "Make It Rain" },
-    { id: "909000057", name: "Dust Off" },
-    { id: "909000058", name: "Captain Booyah" },
-    { id: "909000060", name: "BOOYAH!" },
-    { id: "909000061", name: "Bhangra" },
-    { id: "909000062", name: "Piece of Cake" },
-    { id: "909000064", name: "I'm Saitama!" },
-    { id: "909000065", name: "The Victor" },
-    { id: "909000066", name: "Sii!" },
-    { id: "909000067", name: "Obliteration" },
-    { id: "909000069", name: "Top Scorer" },
-    { id: "909000070", name: "Triple Kicks" },
-    { id: "909000071", name: "Cobra Dance" },
-    { id: "909000072", name: "Predator Pulse" },
-    { id: "909000073", name: "Ground Punch" },
-    { id: "909000074", name: "The Biker" },
-    { id: "909000076", name: "One-Finger Pushup" },
-    { id: "909000077", name: "Stage Time" },
-    { id: "909000078", name: "Booyah! Balloon" },
-    { id: "909000079", name: "More Practice" },
-    { id: "909000080", name: "FFWS 2021" },
-    { id: "909000086", name: "Mythos Four" },
-    { id: "909000087", name: "Champion Grab" },
-    { id: "909000088", name: "Win and Chill" },
-    { id: "909000089", name: "Hadouken" },
-    { id: "909000091", name: "Big Smash" },
-    { id: "909000093", name: "All In Control" },
-    { id: "909000094", name: "Debugging" },
-    { id: "909000095", name: "Waggor Wave" },
-    { id: "909000096", name: "Crazy Guitar" },
-    { id: "909000121", name: "Dribble King" },
-    { id: "909000123", name: "Mind it!" },
-    { id: "909000124", name: "Golden Combo" },
-    { id: "909000125", name: "Sick Moves" },
-    { id: "909000128", name: "Ruler's Flag" },
-    { id: "909000129", name: "Money Throw" },
-    { id: "909000130", name: "Endless Bullets" },
-    { id: "909000133", name: "Fire Slam" },
-    { id: "909000134", name: "Heartbroken" },
-    { id: "909000135", name: "Rock Paper Scissors" },
-    { id: "909000136", name: "Shattered Reality" },
-    { id: "909000137", name: "Halo of Music" },
-    { id: "909000138", name: "Burnt BBQ" },
-    { id: "909000139", name: "Switching Steps" },
-    { id: "909000140", name: "Creed Slay" },
-    { id: "909000141", name: "Leap of Fail" },
-    { id: "909000143", name: "Helicopter Shot" },
-    { id: "909000144", name: "Kungfu Tigers" },
-    { id: "909000145", name: "Possessed Warrior" },
-    { id: "909033001", name: "Fireborn" },
-    { id: "909033002", name: "Golden Feather" },
-    { id: "909033004", name: "Drop Kick" },
-    { id: "909033005", name: "Sit Down!" },
-    { id: "909033006", name: "BOOYAH Sparks" },
-    { id: "909033007", name: "The FFWS Dance" },
-    { id: "909033008", name: "Easy Peasy" },
-    { id: "909033009", name: "Winner Throw" },
-    { id: "909033010", name: "Weight of Victory" },
-    { id: "909034001", name: "Chronicle of Sword" },
-    { id: "909034002", name: "The Collapse" },
-    { id: "909034003", name: "Flaming Groove" },
-    { id: "909034004", name: "Energetic" },
-    { id: "909034005", name: "Ridicule" },
-    { id: "909034006", name: "Tease Waggor" },
-    { id: "909034007", name: "Great Conductor" },
-    { id: "909034008", name: "Fake Death" },
-    { id: "909034009", name: "Twerk" },
-    { id: "909034010", name: "BR Heroic Emote" },
-    { id: "909034011", name: "BR Master Emote" },
-    { id: "909034012", name: "CS Heroic Emote" },
-    { id: "909034013", name: "CS Master Emote" },
-    { id: "909034014", name: "Yes, I do" },
-    { id: "909035001", name: "Free Money!" },
-    { id: "909035005", name: "Victorious Eagle" },
-    { id: "909035006", name: "Flying Saucer" },
-    { id: "909035008", name: "Bobble Dance" },
-    { id: "909035009", name: "Weight Training" },
-    { id: "909035010", name: "Beautiful Love" },
-    { id: "909035011", name: "Groove Moves" },
-    { id: "909035012", name: "Howler's Rage" },
-    { id: "909035013", name: "Louder Please" },
-    { id: "909035014", name: "Ninja Stand" },
-    { id: "909035015", name: "Creator In Action" },
-    { id: "909036001", name: "Ghost Float" },
-    { id: "909036002", name: "Shiba Surf" },
-    { id: "909036003", name: "Waiter Walk" },
-    { id: "909036004", name: "Graffiti Cameraman" },
-    { id: "909036005", name: "Agile Boxer" },
-    { id: "909036006", name: "Sunbathing" },
-    { id: "909036008", name: "Skateboard Swag" },
-    { id: "909036009", name: "Phantom Tamer" },
-    { id: "909036010", name: "The Signal" },
-    { id: "909036011", name: "Eternal Descent" },
-    { id: "909036012", name: "Swaggy Dance" },
-    { id: "909036014", name: "Admire" },
-    { id: "909037001", name: "Reindeer Float" },
-    { id: "909037002", name: "Bamboo Dance" },
-    { id: "909037003", name: "Dance of Constellation" },
-    { id: "909037004", name: "Trophy Grab" },
-    { id: "909037005", name: "Starry Hands" },
-    { id: "909037006", name: "Yum" },
-    { id: "909037007", name: "Happy Dancing" },
-    { id: "909037008", name: "Juggle" },
-    { id: "909037009", name: "Neon Sign" },
-    { id: "909037010", name: "Beast Tease" },
-    { id: "909037011", name: "Drachen Tear" },
-    { id: "909037012", name: "Clap Dance" },
-    { id: "909038001", name: "The Influencer" },
-    { id: "909038003", name: "Techno Blast" },
-    { id: "909038004", name: "Be My Valentine" },
-    { id: "909038005", name: "Angry Walk" },
-    { id: "909038006", name: "Make Some Noise" },
-    { id: "909038008", name: "Croco Hooray" },
-    { id: "909038009", name: "Scorpio Spin" },
-    { id: "909038010", name: "Cinder Summon" },
-    { id: "909038011", name: "Shall We Dance?" },
-    { id: "909038012", name: "Achiever Flip" },
-    { id: "909038013", name: "Spin Master" },
-    { id: "909039001", name: "Festival Celebration" },
-    { id: "909039002", name: "Artistic Dance" },
-    { id: "909039003", name: "Forward Backward" },
-    { id: "909039004", name: "Scorpion Friend" },
-    { id: "909039005", name: "Aching Power" },
-    { id: "909039006", name: "Earthly Force" },
-    { id: "909039007", name: "Grenade Magic" },
-    { id: "909039008", name: "Oh Yeah!" },
-    { id: "909039009", name: "Grace On Wheels" },
-    { id: "909039010", name: "Flex" },
-    { id: "909039011", name: "Crimson Doom" },
-    { id: "909039012", name: "Fire Beast Tamer" },
-    { id: "909039013", name: "Crimson Tunes" },
-    { id: "909039014", name: "Swaggy V-Steps" },
-    { id: "909040001", name: "Chromatic Finish" },
-    { id: "909040002", name: "Smash the Feather" },
-    { id: "909040003", name: "Sonorous Steps" },
-    { id: "909040004", name: "Fishing for Wisdom" },
-    { id: "909040005", name: "Chromatic Pop Dance" },
-    { id: "909040006", name: "Chroma Twist" },
-    { id: "909040008", name: "Birth of Justice" },
-    { id: "909040009", name: "Spider-Sense" },
-    { id: "909040011", name: "Play With Thunderbolt" },
-    { id: "909040012", name: "6th Anniversary" },
-    { id: "909040013", name: "Wisdom Swing" },
-    { id: "909040014", name: "Helicopter Shot" },
-    { id: "909041005", name: "Diz My Popblaster" },
-    { id: "909041006", name: "Dance Puppet Dance!" },
-    { id: "909041007", name: "High Knees" },
-    { id: "909041008", name: "Bony Fumes" },
-    { id: "909041009", name: "Feel the Electricity" },
-    { id: "909041010", name: "Whac-A-Cotton" },
-    { id: "909041011", name: "Honorable Mention" },
-    { id: "909041012", name: "BR Grandmaster" },
-    { id: "909041013", name: "CS Grandmaster" },
-    { id: "909041014", name: "Monster Clubbing" },
-    { id: "909041015", name: "Basudara Dance" },
-    { id: "909042001", name: "Stir-Fry Frostfire" },
-    { id: "909042002", name: "Money Rain" },
-    { id: "909042003", name: "Frostfire's Calling" },
-    { id: "909042004", name: "Stomping Foot" },
-    { id: "909042005", name: "This Way" },
-    { id: "909042006", name: "Excellent Service" },
-    { id: "909042009", name: "Celebration Schuss" },
-    { id: "909042011", name: "Dawn Voyage" },
-    { id: "909042012", name: "Lamborghini Ride" },
-    { id: "909042013", name: "Hello Frostfire" },
-    { id: "909042016", name: "Hand Grooves" },
-    { id: "909042017", name: "Free Fire Toiletman" },
-    { id: "909042018", name: "Kemusan" },
-    { id: "909043001", name: "Ribbit Rider" },
-    { id: "909043002", name: "Inner Self Mastery" },
-    { id: "909043003", name: "Emperor's Treasure" },
-    { id: "909043004", name: "Why So Chaos?" },
-    { id: "909043005", name: "Huge Feast" },
-    { id: "909043006", name: "Color Burst" },
-    { id: "909043007", name: "Dragon Swipe" },
-    { id: "909043008", name: "Samba" },
-    { id: "909043009", name: "Speed Summon" },
-    { id: "909043010", name: "What a Match" },
-    { id: "909043013", name: "What a Pair" },
-    { id: "909044001", name: "Byte Mounting" },
-    { id: "909044002", name: "The Unicyclist" },
-    { id: "909044003", name: "Basket Rafting" },
-    { id: "909044004", name: "Happy Lamb" },
-    { id: "909044005", name: "Paradox Enlightenment" },
-    { id: "909044006", name: "Harmonious Paradox" },
-    { id: "909044007", name: "Raise Your Thumb!" },
-    { id: "909044015", name: "Final Paradox" },
-    { id: "909044016", name: "Honk Up!" },
-    { id: "909045002", name: "Spring Rocker" },
-    { id: "909045003", name: "Giddy Up!" },
-    { id: "909045004", name: "The Goosy Dance" },
-    { id: "909045005", name: "Captain Victor" },
-    { id: "909045010", name: "A Flower Salute" },
-    { id: "909045011", name: "Little Foxy Run" },
-    { id: "909045012", name: "Mr. Waggor's Seesaw" },
-    { id: "909045015", name: "Floating Meditation" },
-    { id: "909045016", name: "Naatu Naatu" },
-    { id: "909045017", name: "Champion's Walk" },
-    { id: "909046001", name: "Aura Boarder" },
-    { id: "909046002", name: "Who's the Champ!" },
-    { id: "909046003", name: "Controlled Combustion" },
-    { id: "909046004", name: "Cheers to Victory!" },
-    { id: "909046005", name: "Shoe Shining" },
-    { id: "909046006", name: "Gunspinning" },
-    { id: "909046007", name: "Crowd Pleaser" },
-    { id: "909046008", name: "No Sweat" },
-    { id: "909046009", name: "Magma Quake" },
-    { id: "909046010", name: "Max Firepower" },
-    { id: "909046011", name: "Can't Touch This" },
-    { id: "909046012", name: "Firestarter" },
-    { id: "909046013", name: "FFWS Flag Flair" },
-    { id: "909046014", name: "Beat Drop" },
-    { id: "909046015", name: "Spatial Awareness" },
-    { id: "909046016", name: "Nagi's Trapping" },
-    { id: "909046017", name: "Soaring Up" },
-    { id: "909047001", name: "I Won't Bow Down" },
-    { id: "909047002", name: "Aurora Iridescence" },
-    { id: "909047003", name: "Couch For Two" },
-    { id: "909047004", name: "Flutter Dash" },
-    { id: "909047005", name: "Slippery Throne" }
-  ];
-
-  function emoteImg(id) {
-    return 'https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/' + id + '.png';
+  // ===== Emotes =====
+  var IMG = 'https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/';
+  var ob55 = [];
+  for (var n = 1; n <= 13; n++) {
+    ob55.push({ id: '9090550' + (n < 10 ? '0' : '') + n, name: 'OB55 Emote ' + n });
   }
+  var allEmotes = `909000075|Cobra Max
+909000063|Ak Max
+909035007|Shotgun Max
+909000068|Scar Max
+909000085|XM8 Max
+909000081|M10 Max
+909000090|Famasa Max
+909000098|UMP Max
+909040010|New M40 Max
+909045001|Parafal Max
+909042008|WD Picker Max
+909049012|Open Fire
+909042007|Gloo Sculpture
+909000002|LOL
+909000003|Provoke
+909000010|Flowers of Love
+909000014|FFWC Throne
+909000032|Selfie
+909000034|Pirate's Flag
+909000036|Top DJ
+909000038|Power of Money
+909000039|Eat My Dust
+909000041|Kongfu
+909000045|I Heart You
+909000046|Tea Time
+909000052|Doggie
+909000055|I'm Rich!
+909000056|Make It Rain
+909000057|Dust Off
+909000058|Captain Booyah
+909000060|BOOYAH!
+909000061|Bhangra
+909000062|Piece of Cake
+909000064|I'm Saitama!
+909000065|The Victor
+909000066|Sii!
+909000067|Obliteration
+909000069|Top Scorer
+909000070|Triple Kicks
+909000071|Cobra Dance
+909000072|Predator Pulse
+909000073|Ground Punch
+909000074|The Biker
+909000076|One-Finger Pushup
+909000077|Stage Time
+909000078|Booyah! Balloon
+909000079|More Practice
+909000080|FFWS 2021
+909000086|Mythos Four
+909000087|Champion Grab
+909000088|Win and Chill
+909000089|Hadouken
+909000091|Big Smash
+909000093|All In Control
+909000094|Debugging
+909000095|Waggor Wave
+909000096|Crazy Guitar
+909000121|Dribble King
+909000123|Mind it!
+909000124|Golden Combo
+909000125|Sick Moves
+909000128|Ruler's Flag
+909000129|Money Throw
+909000130|Endless Bullets
+909000133|Fire Slam
+909000134|Heartbroken
+909000135|Rock Paper Scissors
+909000136|Shattered Reality
+909000137|Halo of Music
+909000138|Burnt BBQ
+909000139|Switching Steps
+909000140|Creed Slay
+909000141|Leap of Fail
+909000143|Helicopter Shot
+909000144|Kungfu Tigers
+909000145|Possessed Warrior
+909033001|Fireborn
+909033002|Golden Feather
+909033004|Drop Kick
+909033005|Sit Down!
+909033006|BOOYAH Sparks
+909033007|The FFWS Dance
+909033008|Easy Peasy
+909033009|Winner Throw
+909033010|Weight of Victory
+909034001|Chronicle of Sword
+909034002|The Collapse
+909034003|Flaming Groove
+909034004|Energetic
+909034005|Ridicule
+909034006|Tease Waggor
+909034007|Great Conductor
+909034008|Fake Death
+909034009|Twerk
+909034010|BR Heroic Emote
+909034011|BR Master Emote
+909034012|CS Heroic Emote
+909034013|CS Master Emote
+909034014|Yes, I do
+909035001|Free Money!
+909035005|Victorious Eagle
+909035006|Flying Saucer
+909035008|Bobble Dance
+909035009|Weight Training
+909035010|Beautiful Love
+909035011|Groove Moves
+909035012|Howler's Rage
+909035013|Louder Please
+909035014|Ninja Stand
+909035015|Creator In Action
+909036001|Ghost Float
+909036002|Shiba Surf
+909036003|Waiter Walk
+909036004|Graffiti Cameraman
+909036005|Agile Boxer
+909036006|Sunbathing
+909036008|Skateboard Swag
+909036009|Phantom Tamer
+909036010|The Signal
+909036011|Eternal Descent
+909036012|Swaggy Dance
+909036014|Admire
+909037001|Reindeer Float
+909037002|Bamboo Dance
+909037003|Dance of Constellation
+909037004|Trophy Grab
+909037005|Starry Hands
+909037006|Yum
+909037007|Happy Dancing
+909037008|Juggle
+909037009|Neon Sign
+909037010|Beast Tease
+909037011|Drachen Tear
+909037012|Clap Dance
+909038001|The Influencer
+909038003|Techno Blast
+909038004|Be My Valentine
+909038005|Angry Walk
+909038006|Make Some Noise
+909038008|Croco Hooray
+909038009|Scorpio Spin
+909038010|Cinder Summon
+909038011|Shall We Dance?
+909038012|Achiever Flip
+909038013|Spin Master
+909039001|Festival Celebration
+909039002|Artistic Dance
+909039003|Forward Backward
+909039004|Scorpion Friend
+909039005|Aching Power
+909039006|Earthly Force
+909039007|Grenade Magic
+909039008|Oh Yeah!
+909039009|Grace On Wheels
+909039010|Flex
+909039011|Crimson Doom
+909039012|Fire Beast Tamer
+909039013|Crimson Tunes
+909039014|Swaggy V-Steps
+909040001|Chromatic Finish
+909040002|Smash the Feather
+909040003|Sonorous Steps
+909040004|Fishing for Wisdom
+909040005|Chromatic Pop Dance
+909040006|Chroma Twist
+909040008|Birth of Justice
+909040009|Spider-Sense
+909040011|Play With Thunderbolt
+909040012|6th Anniversary
+909040013|Wisdom Swing
+909040014|Helicopter Shot
+909041005|Diz My Popblaster
+909041006|Dance Puppet Dance!
+909041007|High Knees
+909041008|Bony Fumes
+909041009|Feel the Electricity
+909041010|Whac-A-Cotton
+909041011|Honorable Mention
+909041012|BR Grandmaster
+909041013|CS Grandmaster
+909041014|Monster Clubbing
+909041015|Basudara Dance
+909042001|Stir-Fry Frostfire
+909042002|Money Rain
+909042003|Frostfire's Calling
+909042004|Stomping Foot
+909042005|This Way
+909042006|Excellent Service
+909042009|Celebration Schuss
+909042011|Dawn Voyage
+909042012|Lamborghini Ride
+909042013|Hello Frostfire
+909042016|Hand Grooves
+909042017|Free Fire Toiletman
+909042018|Kemusan
+909043001|Ribbit Rider
+909043002|Inner Self Mastery
+909043003|Emperor's Treasure
+909043004|Why So Chaos?
+909043005|Huge Feast
+909043006|Color Burst
+909043007|Dragon Swipe
+909043008|Samba
+909043009|Speed Summon
+909043010|What a Match
+909043013|What a Pair
+909044001|Byte Mounting
+909044002|The Unicyclist
+909044003|Basket Rafting
+909044004|Happy Lamb
+909044005|Paradox Enlightenment
+909044006|Harmonious Paradox
+909044007|Raise Your Thumb!
+909044015|Final Paradox
+909044016|Honk Up!
+909045002|Spring Rocker
+909045003|Giddy Up!
+909045004|The Goosy Dance
+909045005|Captain Victor
+909045010|A Flower Salute
+909045011|Little Foxy Run
+909045012|Mr. Waggor's Seesaw
+909045015|Floating Meditation
+909045016|Naatu Naatu
+909045017|Champion's Walk
+909046001|Aura Boarder
+909046002|Who's the Champ!
+909046003|Controlled Combustion
+909046004|Cheers to Victory!
+909046005|Shoe Shining
+909046006|Gunspinning
+909046007|Crowd Pleaser
+909046008|No Sweat
+909046009|Magma Quake
+909046010|Max Firepower
+909046011|Can't Touch This
+909046012|Firestarter
+909046013|FFWS Flag Flair
+909046014|Beat Drop
+909046015|Spatial Awareness
+909046016|Nagi's Trapping
+909046017|Soaring Up
+909047001|I Won't Bow Down
+909047002|Aurora Iridescence
+909047003|Couch For Two
+909047004|Flutter Dash
+909047005|Slippery Throne`.split('\n').map(function (line) {
+    var k = line.indexOf('|');
+    return { id: line.slice(0, k), name: line.slice(k + 1) };
+  });
 
   var teamCode = document.getElementById('team-code');
   var serverSel = document.getElementById('server');
@@ -549,127 +526,118 @@ header{display:flex;align-items:center;justify-content:space-between;gap:14px;fl
   var listAll = document.getElementById('emote-list-all');
   var searchInput = document.getElementById('emote-search');
   var loadMoreBtn = document.getElementById('load-more');
-  var allCountEl = document.getElementById('all-count');
+  var allCount = document.getElementById('all-count');
   var SEND_ICON = '<svg class="i"><use href="#i-send"/></svg> Send';
 
-  allCountEl.textContent = allEmotes.length + ' emotes';
-
-  // Build API URL with new free CORS Proxy (AllOrigins)
+  // Direct request to the API (no third-party proxy, so the key is not shared with anyone else)
   function buildUrl(emoteId) {
-    // Generate the direct URL to the API
-    var targetUrl = API_ENDPOINT + '?' +
-      'key=' + encodeURIComponent(API_KEY) +
+    var p = 'key=' + encodeURIComponent(API_KEY) +
       '&region=' + encodeURIComponent(serverSel.value) +
       '&tc=' + encodeURIComponent(teamCode.value.trim()) +
       '&uid1=' + encodeURIComponent(uids[0].value.trim());
-      
-    for (var n = 2; n <= 6; n++) {
-      var v = uids[n - 1].value.trim();
-      if (v) targetUrl += '&uid' + n + '=' + encodeURIComponent(v);
+    for (var i = 2; i <= 6; i++) {
+      var v = uids[i - 1].value.trim();
+      if (v) p += '&uid' + i + '=' + encodeURIComponent(v);
     }
-    targetUrl += '&emote_id=' + encodeURIComponent(emoteId);
-
-    // Wrap it in a CORS proxy to bypass browser restrictions
-    // Using allorigins.win because corsproxy.io now requires paid API keys
-    return 'https://api.allorigins.win/raw?url=' + encodeURIComponent(targetUrl);
+    return API_BASE + '?' + p + '&emote_id=' + encodeURIComponent(emoteId);
   }
 
-  // Send function
   function send(btn, emoteId) {
     if (!teamCode.value.trim() || !uids[0].value.trim()) {
-      showToast('⚠️ Please fill in Team Code and UID 1', 'error');
+      showToast('Please fill in Team Code and UID 1', 'error');
       return;
     }
-    
     var url = buildUrl(emoteId);
     btn.disabled = true;
-    showToast('🔄 Sending emote...', 'info');
+    showToast('Sending emote...', 'info');
 
-    fetch(url, { method: 'GET', headers: { 'Accept': 'application/json' } })
+    fetch(url, { method: 'GET' })
       .then(function (res) {
         return res.text().then(function (text) {
           var data = null;
           try { data = JSON.parse(text); } catch (e) {}
-          
           if (!res.ok) {
-            var errMsg = (data && (data.message || data.error || data.msg)) || 'Request failed (HTTP ' + res.status + ')';
-            throw new Error(errMsg);
+            showToast((data && (data.message || data.error)) || 'Error ' + res.status, 'error');
+          } else if (data && (data.error || (data.status && data.status !== 'success'))) {
+            showToast(data.error || data.message || 'Something went wrong', 'error');
+          } else {
+            showToast((data && (data.message || data.msg)) || 'Emote sent!', 'success');
           }
-          if (data && data.error) throw new Error(data.error);
-          
-          return data || text;
         });
       })
-      .then(function (data) {
-        var msg = (data && typeof data === 'object' && (data.message || data.msg || data.response));
-        if (!msg && typeof data === 'string') msg = data.slice(0, 120);
-        showToast(msg || '✅ Emote sent successfully!', 'success');
+      .catch(function () {
+        // The browser would not let the page read the reply (CORS). The request itself can still go through.
+        return fetch(url, { method: 'GET', mode: 'no-cors' })
+          .then(function () { showToast('Emote request sent! Check in game.', 'success'); })
+          .catch(function (err) { showToast('Network error: ' + err.message, 'error'); });
       })
-      .catch(function (err) {
-        console.error('Fetch Error:', err); // Log to console for debugging
-        showToast(err.message || '❌ Network error. Please check API or connection.', 'error');
-      })
-      .finally(function () {
-        btn.disabled = false;
-      });
+      .then(function () { btn.disabled = false; });
   }
 
-  // Build a single emote card
   function makeCard(em) {
     var item = document.createElement('div');
     item.className = 'emote-item';
+
     var img = document.createElement('img');
-    img.src = em.img || emoteImg(em.id);
+    var sources = [
+      IMG + em.id + '.png',
+      'https://fastly.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/' + em.id + '.png',
+      'https://gcore.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/' + em.id + '.png',
+      'https://raw.githubusercontent.com/ShahGCreator/icon/main/PNG/' + em.id + '.png'
+    ];
+    var tries = 0;
+    img.referrerPolicy = 'no-referrer';
     img.alt = em.name;
-    img.loading = 'lazy';
     img.onerror = function () {
-      img.style.display = 'none';
+      tries++;
+      if (tries < sources.length) { this.src = sources[tries]; return; }
       var ph = document.createElement('div');
       ph.className = 'emote-ph';
       ph.innerHTML = '<svg class="i"><use href="#i-spark"/></svg>';
-      item.insertBefore(ph, item.firstChild);
+      if (this.parentNode) this.parentNode.replaceChild(ph, this);
     };
-    var name = document.createElement('div');
+    img.src = sources[0];
+
+    var name = document.createElement('p');
     name.className = 'emote-name';
     name.textContent = em.name;
+
     var btn = document.createElement('button');
     btn.className = 'send';
     btn.innerHTML = SEND_ICON;
     btn.addEventListener('click', function () { send(btn, em.id); });
+
     item.appendChild(img);
     item.appendChild(name);
     item.appendChild(btn);
     return item;
   }
 
-  // Render OB55 (full, no pagination)
-  ob55Emotes.forEach(function (em) { listOb55.appendChild(makeCard(em)); });
+  ob55.forEach(function (em) { listOb55.appendChild(makeCard(em)); });
 
-  // Pagination for All Emotes
-  var PAGE_SIZE = 30;
-  var shown = 0;
-  var filtered = allEmotes.slice();
-
-  function renderPage(reset) {
+  var PAGE = 30, shown = 0, filtered = allEmotes.slice();
+  function renderAll(reset) {
     if (reset) { listAll.innerHTML = ''; shown = 0; }
-    var next = filtered.slice(shown, shown + PAGE_SIZE);
-    next.forEach(function (em) { listAll.appendChild(makeCard(em)); });
-    shown += next.length;
+    filtered.slice(shown, shown + PAGE).forEach(function (em) { listAll.appendChild(makeCard(em)); });
+    shown = Math.min(shown + PAGE, filtered.length);
     loadMoreBtn.hidden = shown >= filtered.length;
-    allCountEl.textContent = filtered.length + ' emotes';
+    allCount.textContent = filtered.length + ' emotes';
+    if (!filtered.length) {
+      var e = document.createElement('div');
+      e.className = 'empty';
+      e.textContent = 'No emotes found';
+      listAll.appendChild(e);
+    }
   }
-
   searchInput.addEventListener('input', function () {
     var q = this.value.trim().toLowerCase();
     filtered = !q ? allEmotes.slice() : allEmotes.filter(function (em) {
       return em.name.toLowerCase().indexOf(q) !== -1 || em.id.indexOf(q) !== -1;
     });
-    renderPage(true);
+    renderAll(true);
   });
-
-  loadMoreBtn.addEventListener('click', function () { renderPage(false); });
-
-  renderPage(true);
+  loadMoreBtn.addEventListener('click', function () { renderAll(false); });
+  renderAll(true);
 })();
 </script>
 </body>
