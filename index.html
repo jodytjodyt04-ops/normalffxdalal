@@ -591,6 +591,16 @@ header{display:flex;align-items:center;justify-content:space-between;gap:14px;fl
     btn.disabled = true;
     showToast('Sending emote...', 'info');
 
+    if (apiSel.value === '2') {
+      // API 2 does not allow the browser to read its reply, so send once without reading it.
+      // If this resolves, the request reached the server. If it fails, it is a real network problem.
+      fetch(url, { method: 'GET', mode: 'no-cors' })
+        .then(function () { showToast('Emote request sent via API 2! Check in game.', 'success'); })
+        .catch(function (err) { showToast('Could not reach API 2 (' + (err && err.message ? err.message : 'network') + '). Check your internet or try API 1.', 'error'); })
+        .then(function () { btn.disabled = false; });
+      return;
+    }
+
     fetch(url, { method: 'GET' })
       .then(function (res) {
         return res.text().then(function (text) {
@@ -608,7 +618,7 @@ header{display:flex;align-items:center;justify-content:space-between;gap:14px;fl
       })
       .catch(function (err) {
         // No resend here (it could send the emote twice). The reply was blocked or the network dropped.
-        showToast('Could not read the reply (' + (err && err.message ? err.message : 'network') + '). Check in game.', 'error');
+        showToast('Could not reach API 1 (' + (err && err.message ? err.message : 'network') + '). Try API 2 or check in game.', 'error');
       })
       .then(function () { btn.disabled = false; });
   }
