@@ -554,17 +554,23 @@ header{display:flex;align-items:center;justify-content:space-between;gap:14px;fl
 
   allCountEl.textContent = allEmotes.length + ' emotes';
 
-  // Build API URL (Using the specific API you requested)
+  // Build API URL with CORS Proxy
   function buildUrl(emoteId) {
-    var p = 'key=' + encodeURIComponent(API_KEY) +
+    // Generate the direct URL to the API
+    var targetUrl = API_ENDPOINT + '?' +
+      'key=' + encodeURIComponent(API_KEY) +
       '&region=' + encodeURIComponent(serverSel.value) +
       '&tc=' + encodeURIComponent(teamCode.value.trim()) +
       '&uid1=' + encodeURIComponent(uids[0].value.trim());
+      
     for (var n = 2; n <= 6; n++) {
       var v = uids[n - 1].value.trim();
-      if (v) p += '&uid' + n + '=' + encodeURIComponent(v);
+      if (v) targetUrl += '&uid' + n + '=' + encodeURIComponent(v);
     }
-    return API_ENDPOINT + '?' + p + '&emote_id=' + encodeURIComponent(emoteId);
+    targetUrl += '&emote_id=' + encodeURIComponent(emoteId);
+
+    // Wrap it in a CORS proxy to bypass browser restrictions
+    return 'https://corsproxy.io/?' + encodeURIComponent(targetUrl);
   }
 
   // Send function
@@ -573,6 +579,7 @@ header{display:flex;align-items:center;justify-content:space-between;gap:14px;fl
       showToast('⚠️ Please fill in Team Code and UID 1', 'error');
       return;
     }
+    
     var url = buildUrl(emoteId);
     btn.disabled = true;
     showToast('🔄 Sending emote...', 'info');
@@ -582,14 +589,13 @@ header{display:flex;align-items:center;justify-content:space-between;gap:14px;fl
         return res.text().then(function (text) {
           var data = null;
           try { data = JSON.parse(text); } catch (e) {}
+          
           if (!res.ok) {
             var errMsg = (data && (data.message || data.error || data.msg)) || 'Request failed (HTTP ' + res.status + ')';
             throw new Error(errMsg);
           }
           if (data && data.error) throw new Error(data.error);
-          if (data && data.message && data.message.toLowerCase().indexOf('fail') !== -1) {
-            throw new Error(data.message);
-          }
+          
           return data || text;
         });
       })
@@ -599,7 +605,8 @@ header{display:flex;align-items:center;justify-content:space-between;gap:14px;fl
         showToast(msg || '✅ Emote sent successfully!', 'success');
       })
       .catch(function (err) {
-        showToast(err.message || '❌ Network error. Please try again.', 'error');
+        console.error('Fetch Error:', err); // Log to console for debugging
+        showToast(err.message || '❌ Network error. Please check API or connection.', 'error');
       })
       .finally(function () {
         btn.disabled = false;
