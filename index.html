@@ -101,6 +101,8 @@ header{display:flex;align-items:center;justify-content:space-between;gap:14px;fl
 .load-more{width:100%;margin-top:16px;padding:14px;border-radius:30px;border:1px solid var(--line);background:var(--card);color:var(--ink);font-weight:800;font-size:14px;cursor:pointer;transition:.2s}
 .load-more:hover{border-color:var(--gold);background:var(--input)}
 .empty{grid-column:1/-1;text-align:center;color:var(--muted);padding:20px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+@media(max-width:640px){.grid3{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -117,6 +119,7 @@ header{display:flex;align-items:center;justify-content:space-between;gap:14px;fl
   <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5a8.5 8.5 0 1 0 11 11z"/></symbol>
   <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 2.5l2.6 6.9 6.9 2.6-6.9 2.6L12 21.5l-2.6-6.9L2.5 12l6.9-2.6z"/></symbol>
   <symbol id="i-insta" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 2.5 4.5 13.5H11L10 21.5l8.5-11H12z"/></symbol>
   <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></symbol>
 </svg>
 
@@ -159,14 +162,24 @@ header{display:flex;align-items:center;justify-content:space-between;gap:14px;fl
 
   <section class="panel">
     <div class="panel-title"><span class="badge"><svg class="i"><use href="#i-users"/></svg></span>Match details</div>
-    <div class="grid2">
+    <div class="grid3">
+      <div class="field">
+        <label for="api"><svg class="i"><use href="#i-bolt"/></svg> API</label>
+        <select id="api">
+          <option value="1">API 1 (Pro)</option>
+          <option value="2">API 2 (Backup)</option>
+        </select>
+      </div>
       <div class="field">
         <label for="server"><svg class="i"><use href="#i-server"/></svg> Server</label>
         <select id="server">
-          <option value="ind">India Server</option>
-          <option value="pk">Pakistan Server</option>
-          <option value="bd">Bangladesh Server</option>
-          <option value="id">Indonesia Server</option>
+          <option value="india">India Server</option>
+          <option value="pakistan">Pakistan Server</option>
+          <option value="bangladesh">Bangladesh Server</option>
+          <option value="indonesia">Indonesia Server</option>
+          <option value="brazil" data-api2="1">Brazil Server (API 2 only)</option>
+          <option value="taiwan" data-api2="1">Taiwan Server (API 2 only)</option>
+          <option value="vietnam" data-api2="1">Vietnam Server (API 2 only)</option>
         </select>
       </div>
       <div class="field">
@@ -529,17 +542,44 @@ header{display:flex;align-items:center;justify-content:space-between;gap:14px;fl
   var allCount = document.getElementById('all-count');
   var SEND_ICON = '<svg class="i"><use href="#i-send"/></svg> Send';
 
-  // Direct request to the API (no third-party proxy, so the key is not shared with anyone else)
+  // ===== Two APIs =====
+  var API2_BASE = 'https://ffemote.pro/api/join';
+  var REGION1 = { india: 'ind', pakistan: 'pk', bangladesh: 'bd', indonesia: 'id' };
+  var apiSel = document.getElementById('api');
+
+  try { apiSel.value = localStorage.getItem('normalpapa_api') || '1'; } catch (e) {}
+  function syncServers() {
+    var is1 = apiSel.value === '1';
+    Array.prototype.forEach.call(serverSel.options, function (o) {
+      if (o.getAttribute('data-api2')) o.disabled = is1;
+    });
+    if (serverSel.options[serverSel.selectedIndex].disabled) serverSel.value = 'india';
+  }
+  apiSel.addEventListener('change', function () {
+    try { localStorage.setItem('normalpapa_api', apiSel.value); } catch (e) {}
+    syncServers();
+  });
+  syncServers();
+
   function buildUrl(emoteId) {
-    var p = 'key=' + encodeURIComponent(API_KEY) +
-      '&region=' + encodeURIComponent(serverSel.value) +
-      '&tc=' + encodeURIComponent(teamCode.value.trim()) +
-      '&uid1=' + encodeURIComponent(uids[0].value.trim());
+    var extra = '';
     for (var i = 2; i <= 6; i++) {
       var v = uids[i - 1].value.trim();
-      if (v) p += '&uid' + i + '=' + encodeURIComponent(v);
+      if (v) extra += '&uid' + i + '=' + encodeURIComponent(v);
     }
-    return API_BASE + '?' + p + '&emote_id=' + encodeURIComponent(emoteId);
+    var tc = encodeURIComponent(teamCode.value.trim());
+    var u1 = encodeURIComponent(uids[0].value.trim());
+    var em = encodeURIComponent(emoteId);
+
+    if (apiSel.value === '2') {
+      // API 2: ffemote.pro (long server names)
+      return API2_BASE + '?tc=' + tc + '&emote_id=' + em +
+        '&server=' + encodeURIComponent(serverSel.value) + '&uid1=' + u1 + extra;
+    }
+    // API 1: proapi.ffglory.site (short region codes)
+    return API_BASE + '?key=' + encodeURIComponent(API_KEY) +
+      '&region=' + encodeURIComponent(REGION1[serverSel.value] || 'ind') +
+      '&tc=' + tc + '&uid1=' + u1 + extra + '&emote_id=' + em;
   }
 
   function send(btn, emoteId) {
