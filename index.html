@@ -588,39 +588,21 @@ header{display:flex;align-items:center;justify-content:space-between;gap:14px;fl
       return;
     }
     var url = buildUrl(emoteId);
+    var apiName = 'API ' + apiSel.value;
     btn.disabled = true;
     showToast('Sending emote...', 'info');
 
-    if (apiSel.value === '2') {
-      // API 2 does not allow the browser to read its reply, so send once without reading it.
-      // If this resolves, the request reached the server. If it fails, it is a real network problem.
-      fetch(url, { method: 'GET', mode: 'no-cors' })
-        .then(function () { showToast('Emote request sent via API 2! Check in game.', 'success'); })
-        .catch(function (err) { showToast('Could not reach API 2 (' + (err && err.message ? err.message : 'network') + '). Check your internet or try API 1.', 'error'); })
-        .then(function () { btn.disabled = false; });
-      return;
-    }
-
-    fetch(url, { method: 'GET' })
-      .then(function (res) {
-        return res.text().then(function (text) {
-          var data = null;
-          try { data = JSON.parse(text); } catch (e) {}
-          var detail = (data && (data.message || data.error || data.msg)) || text.replace(/<[^>]*>/g, ' ').trim().slice(0, 140);
-          if (!res.ok) {
-            showToast('HTTP ' + res.status + (detail ? ': ' + detail : ''), 'error');
-          } else if (data && (data.error || (data.status && data.status !== 'success'))) {
-            showToast(detail || 'Something went wrong', 'error');
-          } else {
-            showToast(detail || 'Emote sent!', 'success');
-          }
-        });
+    // One request, sent once. The API does not let the browser read its reply, so a normal fetch
+    // shows "Failed to fetch" even when the request goes through. With no-cors the request is sent
+    // either way: if this resolves, the server was reached; if it fails, it is a real network problem.
+    fetch(url, { method: 'GET', mode: 'no-cors', cache: 'no-store', referrerPolicy: 'no-referrer' })
+      .then(function () {
+        showToast('Emote sent via ' + apiName + '! Check in game.', 'success');
       })
       .catch(function (err) {
-        // No resend here (it could send the emote twice). The reply was blocked or the network dropped.
-        showToast('Could not reach API 1 (' + (err && err.message ? err.message : 'network') + '). Try API 2 or check in game.', 'error');
+        showToast('Could not reach ' + apiName + ' (' + (err && err.message ? err.message : 'network') + '). Check your internet or try the other API.', 'error');
       })
-      .then(function () { btn.disabled = false; });
+      .then(function () { setTimeout(function () { btn.disabled = false; }, 800); });
   }
 
   function makeCard(em) {
