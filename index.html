@@ -556,20 +556,19 @@ header{display:flex;align-items:center;justify-content:space-between;gap:14px;fl
         return res.text().then(function (text) {
           var data = null;
           try { data = JSON.parse(text); } catch (e) {}
+          var detail = (data && (data.message || data.error || data.msg)) || text.replace(/<[^>]*>/g, ' ').trim().slice(0, 140);
           if (!res.ok) {
-            showToast((data && (data.message || data.error)) || 'Error ' + res.status, 'error');
+            showToast('HTTP ' + res.status + (detail ? ': ' + detail : ''), 'error');
           } else if (data && (data.error || (data.status && data.status !== 'success'))) {
-            showToast(data.error || data.message || 'Something went wrong', 'error');
+            showToast(detail || 'Something went wrong', 'error');
           } else {
-            showToast((data && (data.message || data.msg)) || 'Emote sent!', 'success');
+            showToast(detail || 'Emote sent!', 'success');
           }
         });
       })
-      .catch(function () {
-        // The browser would not let the page read the reply (CORS). The request itself can still go through.
-        return fetch(url, { method: 'GET', mode: 'no-cors' })
-          .then(function () { showToast('Emote request sent! Check in game.', 'success'); })
-          .catch(function (err) { showToast('Network error: ' + err.message, 'error'); });
+      .catch(function (err) {
+        // No resend here (it could send the emote twice). The reply was blocked or the network dropped.
+        showToast('Could not read the reply (' + (err && err.message ? err.message : 'network') + '). Check in game.', 'error');
       })
       .then(function () { btn.disabled = false; });
   }
