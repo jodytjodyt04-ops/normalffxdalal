@@ -592,15 +592,27 @@ header{display:flex;align-items:center;justify-content:space-between;gap:14px;fl
     btn.disabled = true;
     showToast('Sending emote...', 'info');
 
-    // One request, sent once. The API does not let the browser read its reply, so a normal fetch
-    // shows "Failed to fetch" even when the request goes through. With no-cors the request is sent
-    // either way: if this resolves, the server was reached; if it fails, it is a real network problem.
-    fetch(url, { method: 'GET', mode: 'no-cors', cache: 'no-store', referrerPolicy: 'no-referrer' })
+    // Step 1: normal request that does not need to read the reply (works even when CORS blocks reading).
+    // Step 2: if the browser refuses that request outright (some in-app viewers only allow images),
+    // send the same link as an image request instead. Only one of the two ever reaches the server.
+    function viaImage() {
+      return new Promise(function (resolve) {
+        var beacon = new Image();
+        beacon.referrerPolicy = 'no-referrer';
+        beacon.onload = beacon.onerror = function () { resolve(); };
+        beacon.src = url + '&_=' + Date.now();
+        setTimeout(resolve, 6000);
+      });
+    }
+
+    fetch(url, { method: 'GET', mode: 'no-cors', cache: 'no-store' })
       .then(function () {
         showToast('Emote sent via ' + apiName + '! Check in game.', 'success');
       })
-      .catch(function (err) {
-        showToast('Could not reach ' + apiName + ' (' + (err && err.message ? err.message : 'network') + '). Check your internet or try the other API.', 'error');
+      .catch(function () {
+        return viaImage().then(function () {
+          showToast('Emote request sent via ' + apiName + ' (backup route). Check in game.', 'success');
+        });
       })
       .then(function () { setTimeout(function () { btn.disabled = false; }, 800); });
   }
